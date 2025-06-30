@@ -29,16 +29,17 @@ const router = createBrowserRouter([
         path: "/my-events",
         element: <MyEvents />,
       },
+      {
+        path: "/register",
+        element: <Register />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
+      },
     ],
   },
-  {
-    path: "/register",
-    element: <Register />,
-  },
-  {
-    path: "/login",
-    element: <Login />,
-  },
+
   {
     path: "*",
     element: <NotFound />,

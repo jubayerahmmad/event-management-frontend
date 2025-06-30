@@ -1,6 +1,6 @@
 import { Calendar, MapPin, Clock, Users, FileText } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 const AddEvent = () => {
   const [formData, setFormData] = useState({
     title: "",
@@ -11,12 +11,15 @@ const AddEvent = () => {
     description: "",
     attendeeCount: 0,
   });
+
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (
@@ -48,7 +51,7 @@ const AddEvent = () => {
     setIsSubmitting(false);
   };
   return (
-    <div className="min-h-screen bg-gray-900 py-8">
+    <div className=" bg-gray-900 py-8">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-gray-800 rounded-lg shadow-md overflow-hidden">
           <div className="bg-gradient-to-r from-blue-600 to-teal-600 px-6 py-8">
@@ -237,13 +240,6 @@ const AddEvent = () => {
 
             {/* Submit Button */}
             <div className="flex justify-end space-x-4">
-              <button
-                type="button"
-                onClick={() => navigate(-1)}
-                className="px-6 py-2 border border-gray-300 rounded-lg text-gray-300 hover:bg-gray-50 transition-colors duration-200"
-              >
-                Cancel
-              </button>
               <button
                 type="submit"
                 disabled={isSubmitting}

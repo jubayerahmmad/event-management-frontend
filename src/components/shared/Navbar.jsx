@@ -8,13 +8,11 @@ const Navbar = () => {
   const profileRef = useRef(null);
   // const navigate = useNavigate();
 
-  const user = true;
+  const user = false;
 
   const navLinkClass = ({ isActive }) =>
-    `px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-      isActive
-        ? "bg-blue-600 text-white"
-        : "text-gray-300 hover:text-white hover:bg-gray-700"
+    `px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
+      isActive ? "text-blue-600" : "text-gray-300 hover:text-blue-600"
     }`;
 
   return (
@@ -26,7 +24,9 @@ const Navbar = () => {
               <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-teal-600 rounded-lg flex items-center justify-center">
                 <Calendar className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold text-white">HeroEvents</span>
+              <span className="text-xl font-bold text-white logo">
+                HeroEvents
+              </span>
             </NavLink>
           </div>
 

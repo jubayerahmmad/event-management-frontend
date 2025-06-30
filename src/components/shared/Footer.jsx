@@ -12,7 +12,7 @@ const Footer = () => {
               <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-teal-600 rounded-lg flex items-center justify-center">
                 <Calendar className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold">HeroEvents</span>
+              <span className="text-xl font-bold logo">HeroEvents</span>
             </div>
             <p className="text-gray-300 mb-4 max-w-md">
               Organize, Explore, and Join Events with Ease. Create, organize,
