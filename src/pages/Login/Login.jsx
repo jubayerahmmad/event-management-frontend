@@ -1,24 +1,45 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Mail, Lock, Calendar } from "lucide-react";
+import { useAuth } from "../../hooks/useAuth";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const { loginUser } = useAuth();
+  const navigate = useNavigate();
 
-  const [errors, setErrors] = useState({});
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
+
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const onSubmit = async (data) => {
+    console.log("data from onSubmit login page", data);
+    try {
+      const { email, password } = data;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(formData);
+      const res = await loginUser(email, password);
+      console.log("res from onSubmit login page", res);
+
+      if (res?.token) {
+        localStorage.setItem("user", JSON.stringify(res));
+        toast.success("Login successful");
+        navigate("/");
+      } else {
+        toast.error(res?.error?.message || "Login failed");
+      }
+    } catch (error) {
+      toast.error(error?.message || "Something went wrong");
+    } finally {
+      setIsSubmitting(false);
+      reset();
+    }
   };
 
   return (
@@ -74,15 +95,7 @@ const Login = () => {
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {errors.general && (
-                  <div className="bg-red-900/50 border border-red-500/50 rounded-xl p-4">
-                    <p className="text-red-400 text-sm font-medium">
-                      {errors.general}
-                    </p>
-                  </div>
-                )}
-
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div className="space-y-2">
                   <label
                     htmlFor="email"
@@ -98,8 +111,7 @@ const Login = () => {
                       id="email"
                       name="email"
                       type="email"
-                      value={formData.email}
-                      onChange={handleChange}
+                      {...register("email", { required: "Email is required" })}
                       className={`w-full pl-12 pr-4 py-3 border rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-700 text-white placeholder-gray-400 ${
                         errors.email
                           ? "border-red-500 bg-red-900/20"
@@ -130,8 +142,9 @@ const Login = () => {
                       id="password"
                       name="password"
                       type={showPassword ? "text" : "password"}
-                      value={formData.password}
-                      onChange={handleChange}
+                      {...register("password", {
+                        required: "Password is required",
+                      })}
                       className={`w-full px-12 py-3 border rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-700 text-white placeholder-gray-400 ${
                         errors.password
                           ? "border-red-500 bg-red-900/20"

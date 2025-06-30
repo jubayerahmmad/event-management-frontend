@@ -41,7 +41,11 @@ export const AuthProvider = ({ children }) => {
         password,
       });
       console.log("data from loginUser", data);
-      setUser(data);
+
+      if (data?.token) {
+        localStorage.setItem("user", JSON.stringify(data));
+        setUser(data);
+      }
       return data;
     } catch (error) {
       console.log(error);
@@ -51,11 +55,17 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const logoutUser = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+  };
+
   const authDetails = {
     user,
     loading,
     createUser,
     loginUser,
+    logoutUser,
   };
   return (
     <AuthContext.Provider value={authDetails}>{children}</AuthContext.Provider>

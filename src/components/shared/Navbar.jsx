@@ -2,11 +2,12 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { Menu, X, Calendar } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
+import toast from "react-hot-toast";
 
 const Navbar = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { user } = useAuth();
+  const { user, logoutUser } = useAuth();
 
   console.log("user from Navbar", user);
 
@@ -86,7 +87,11 @@ const Navbar = () => {
                       <div className="text-gray-400 text-xs">{user?.email}</div>
                     </div>
                     <button
-                      // onClick={handleLogout}
+                      onClick={() => {
+                        logoutUser();
+                        toast.success("Logged out successfully");
+                        setIsProfileOpen(false);
+                      }}
                       className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-200"
                     >
                       Log Out
