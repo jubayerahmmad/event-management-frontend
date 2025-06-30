@@ -1,14 +1,14 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { Menu, X, Calendar } from "lucide-react";
 
 const Navbar = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const profileRef = useRef(null);
+
   // const navigate = useNavigate();
 
-  const user = false;
+  const user = true;
 
   const navLinkClass = ({ isActive }) =>
     `px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
@@ -31,7 +31,7 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center space-x-4">
             <NavLink to="/" className={navLinkClass}>
               Home
             </NavLink>
@@ -61,7 +61,7 @@ const Navbar = () => {
                 </NavLink>
               </div>
             ) : (
-              <div className="relative" ref={profileRef}>
+              <div className="relative">
                 <button
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
                   className="flex items-center space-x-2 text-gray-300 hover:text-white focus:outline-none"
@@ -96,7 +96,7 @@ const Navbar = () => {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden flex items-center">
+          <div className="lg:hidden flex items-center">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="text-gray-300 hover:text-white focus:outline-none"
@@ -108,29 +108,29 @@ const Navbar = () => {
 
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-gray-800 border-t border-gray-700">
+          <div className="lg:hidden">
+            <div className="flex flex-col p-2 space-y-1 bg-gray-800 border-t border-gray-700">
               <NavLink
                 to="/"
-                className="block px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-md transition-colors duration-200"
+                className="px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-md transition-colors duration-200"
               >
                 Home
               </NavLink>
               <NavLink
                 to="/events"
-                className="block px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-md transition-colors duration-200"
+                className="px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-md transition-colors duration-200"
               >
                 Events
               </NavLink>
               <NavLink
                 to="/add-event"
-                className="block px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-md transition-colors duration-200"
+                className="px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-md transition-colors duration-200"
               >
                 Add Event
               </NavLink>
               <NavLink
                 to="/my-events"
-                className="block px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-md transition-colors duration-200"
+                className="px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-md transition-colors duration-200"
               >
                 My Events
               </NavLink>
