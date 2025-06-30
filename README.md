@@ -1,6 +1,6 @@
-# React Starter Template
+# Event Management System
 
-A modern React starter template with Vite, Tailwind CSS, React Router, and TanStack Query.
+A modern event management application built with React, Vite, and Tailwind CSS.
 
 ## 🚀 Quick Start
 
@@ -12,24 +12,13 @@ npm install
 npm run dev
 ```
 
-## 📦 What's Included
+## 📦 Features
 
-- ⚡ **Vite** - Fast build tool
-- 🎨 **Tailwind CSS v4** - Utility-first CSS
-- 🔄 **React Router v7** - Client-side routing
-- 📡 **TanStack Query** - Data fetching
-- 🔔 **React Hot Toast** - Notifications
-- 🧹 **ESLint** - Code linting
-
-## 📁 Project Structure
-
-```
-src/
-├── components/          # Reusable components (empty - ready for your components)
-├── pages/              # Page components
-├── routes/             # Route configurations
-└── main.jsx           # App entry point
-```
+- 🎫 Event creation and management
+- 👥 User registration and authentication
+- 📅 Event scheduling and organization
+- 🎨 Modern UI with Tailwind CSS
+- ⚡ Fast development with Vite
 
 ## 📜 Scripts
 
@@ -40,4 +29,4 @@ src/
 
 ---
 
-**Ready to build something amazing! 🎉**
+**Building amazing events! 🎉**
