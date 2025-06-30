@@ -9,26 +9,47 @@ import {
   Users,
 } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
+import toast from "react-hot-toast";
+import { useForm } from "react-hook-form";
 
 const Register = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    photoURL: "",
-  });
-  const [errors, setErrors] = useState({});
+  const { createUser } = useAuth();
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
+
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(formData);
+  const onSubmit = async (data) => {
+    console.log(data);
+    try {
+      setIsSubmitting(true);
+
+      const { name, email, password, photoURL } = data;
+      const res = await createUser(email, password, name, photoURL);
+      console.log("res from onSubmit", res);
+
+      if (res?.token) {
+        localStorage.setItem("user", JSON.stringify(res));
+        toast.success("User registered successfully");
+        navigate("/");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.message || "Something went wrong");
+    } finally {
+      setIsSubmitting(false);
+      reset();
+    }
   };
   return (
     <div className="min-h-screen bg-gray-900">
@@ -90,15 +111,7 @@ const Register = () => {
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {errors.general && (
-                  <div className="bg-red-900/50 border border-red-500/50 rounded-xl p-4">
-                    <p className="text-red-400 text-sm font-medium">
-                      {errors.general}
-                    </p>
-                  </div>
-                )}
-
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div className="space-y-2">
                   <label
                     htmlFor="name"
@@ -114,8 +127,7 @@ const Register = () => {
                       id="name"
                       name="name"
                       type="text"
-                      value={formData.name}
-                      onChange={handleChange}
+                      {...register("name", { required: true })}
                       className={`w-full pl-12 pr-4 py-3 border rounded-xl shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-gray-700 text-white placeholder-gray-400 ${
                         errors.name
                           ? "border-red-500 bg-red-900/20"
@@ -146,8 +158,7 @@ const Register = () => {
                       id="email"
                       name="email"
                       type="email"
-                      value={formData.email}
-                      onChange={handleChange}
+                      {...register("email", { required: true })}
                       className={`w-full pl-12 pr-4 py-3 border rounded-xl shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-gray-700 text-white placeholder-gray-400 ${
                         errors.email
                           ? "border-red-500 bg-red-900/20"
@@ -178,8 +189,15 @@ const Register = () => {
                       id="password"
                       name="password"
                       type={showPassword ? "text" : "password"}
-                      value={formData.password}
-                      onChange={handleChange}
+                      {...register("password", {
+                        required: true,
+                        pattern: {
+                          value:
+                            /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]{6,}$/,
+                          message:
+                            "Password must contain at least 6 characters, at least one uppercase letter, one lowercase letter and one number",
+                        },
+                      })}
                       className={`w-full pl-12 pr-12 py-3 border rounded-xl shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-gray-700 text-white placeholder-gray-400 ${
                         errors.password
                           ? "border-red-500 bg-red-900/20"
@@ -201,7 +219,7 @@ const Register = () => {
                   </div>
                   {errors.password && (
                     <p className="text-red-400 text-sm font-medium">
-                      {errors.password}
+                      {errors.password.message}
                     </p>
                   )}
                 </div>
@@ -224,14 +242,13 @@ const Register = () => {
                       id="photoURL"
                       name="photoURL"
                       type="url"
-                      value={formData.photoURL}
-                      onChange={handleChange}
                       className={`w-full pl-12 pr-4 py-3 border rounded-xl shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-gray-700 text-white placeholder-gray-400 ${
                         errors.photoURL
                           ? "border-red-500 bg-red-900/20"
                           : "border-gray-600"
                       }`}
                       placeholder="https://example.com/photo.jpg"
+                      {...register("photoURL", { required: false })}
                     />
                   </div>
                   {errors.photoURL && (

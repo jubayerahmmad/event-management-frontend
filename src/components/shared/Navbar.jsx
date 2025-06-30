@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { Menu, X, Calendar } from "lucide-react";
+import { useAuth } from "../../hooks/useAuth";
 
 const Navbar = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user } = useAuth();
+
+  console.log("user from Navbar", user);
 
   // const navigate = useNavigate();
-
-  const user = true;
 
   const navLinkClass = ({ isActive }) =>
     `px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
@@ -67,27 +69,27 @@ const Navbar = () => {
                   className="flex items-center space-x-2 text-gray-300 hover:text-white focus:outline-none"
                 >
                   <img
-                    src={"https://i.pravatar.cc/150?img=13"}
+                    src={
+                      user?.photoURL
+                        ? user.photoURL
+                        : "https://i.pravatar.cc/150?img=13"
+                    }
                     alt="Profile"
-                    className="w-8 h-8 rounded-full object-cover border-2 border-gray-600"
+                    className="w-10 h-10 rounded-full object-cover border-2 border-teal-600"
                   />
                 </button>
 
                 {isProfileOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 z-50 border border-gray-700">
                     <div className="px-4 py-2 text-sm text-gray-300 border-b border-gray-700">
-                      <div className="font-medium text-white">
-                        {"User Name"}
-                      </div>
-                      <div className="text-gray-400 text-xs">
-                        {"user@example.com"}
-                      </div>
+                      <div className="font-medium text-white">{user?.name}</div>
+                      <div className="text-gray-400 text-xs">{user?.email}</div>
                     </div>
                     <button
                       // onClick={handleLogout}
                       className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-200"
                     >
-                      Logout
+                      Log Out
                     </button>
                   </div>
                 )}

@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
+import { useAuth } from "../../../hooks/useAuth";
 
 const Banner = () => {
-  const user = true;
+  const { user } = useAuth();
   return (
     <section
       className="relative py-20 px-4 sm:px-6 lg:px-8 bg-cover bg-center min-h-[600px] flex items-center"
@@ -14,13 +15,14 @@ const Banner = () => {
 
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto text-center text-white">
-        <h1 className="text-4xl md:text-6xl font-bold mb-6">
+        <h1 className="text-3xl md:text-5xl font-bold mb-6">
           Organize, Explore, and Join Events
-          <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-teal-400">
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-teal-400">
+            {" "}
             with Ease
           </span>
         </h1>
-        <p className="text-xl mb-8 max-w-3xl mx-auto text-gray-300">
+        <p className="md:text-lg mb-8 max-w-3xl mx-auto text-gray-300">
           Create, organize, and manage events effortlessly. Connect with your
           community and make every gathering memorable with our comprehensive
           event management platform.
