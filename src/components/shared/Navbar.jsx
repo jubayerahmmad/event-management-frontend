@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { Menu, X, Calendar } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import toast from "react-hot-toast";
@@ -9,9 +9,9 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, logoutUser } = useAuth();
 
-  console.log("user from Navbar", user);
+  // console.log("user from Navbar", user);
 
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const navLinkClass = ({ isActive }) =>
     `px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
@@ -38,15 +38,6 @@ const Navbar = () => {
             <NavLink to="/" className={navLinkClass}>
               Home
             </NavLink>
-            <NavLink to="/events" className={navLinkClass}>
-              Events
-            </NavLink>
-            <NavLink to="/add-event" className={navLinkClass}>
-              Add Event
-            </NavLink>
-            <NavLink to="/my-events" className={navLinkClass}>
-              My Events
-            </NavLink>
 
             {!user ? (
               <div className="flex items-center space-x-2">
@@ -64,41 +55,59 @@ const Navbar = () => {
                 </NavLink>
               </div>
             ) : (
-              <div className="relative">
-                <button
-                  onClick={() => setIsProfileOpen(!isProfileOpen)}
-                  className="flex items-center space-x-2 text-gray-300 hover:text-white focus:outline-none"
-                >
-                  <img
-                    src={
-                      user?.photoURL
-                        ? user.photoURL
-                        : "https://i.pravatar.cc/150?img=13"
-                    }
-                    alt="Profile"
-                    className="w-10 h-10 rounded-full object-cover border-2 border-teal-600"
-                  />
-                </button>
+              <>
+                <div className="flex items-center space-x-2">
+                  <NavLink to="/events" className={navLinkClass}>
+                    Events
+                  </NavLink>
+                  <NavLink to="/add-event" className={navLinkClass}>
+                    Add Event
+                  </NavLink>
+                  <NavLink to="/my-events" className={navLinkClass}>
+                    My Events
+                  </NavLink>
+                </div>
+                <div className="relative">
+                  <button
+                    onClick={() => setIsProfileOpen(!isProfileOpen)}
+                    className="flex items-center space-x-2 text-gray-300 hover:text-white focus:outline-none"
+                  >
+                    <img
+                      src={
+                        user?.photoURL
+                          ? user.photoURL
+                          : "https://i.pravatar.cc/150?img=13"
+                      }
+                      alt="Profile"
+                      className="w-10 h-10 rounded-full object-cover border-2 border-teal-600"
+                    />
+                  </button>
 
-                {isProfileOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 z-50 border border-gray-700">
-                    <div className="px-4 py-2 text-sm text-gray-300 border-b border-gray-700">
-                      <div className="font-medium text-white">{user?.name}</div>
-                      <div className="text-gray-400 text-xs">{user?.email}</div>
+                  {isProfileOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 z-50 border border-gray-700">
+                      <div className="px-4 py-2 text-sm text-gray-300 border-b border-gray-700">
+                        <div className="font-medium text-white">
+                          {user?.name}
+                        </div>
+                        <div className="text-gray-400 text-xs">
+                          {user?.email}
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => {
+                          logoutUser();
+                          toast.success("Logged out successfully");
+                          setIsProfileOpen(false);
+                          navigate("/");
+                        }}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-200"
+                      >
+                        Log Out
+                      </button>
                     </div>
-                    <button
-                      onClick={() => {
-                        logoutUser();
-                        toast.success("Logged out successfully");
-                        setIsProfileOpen(false);
-                      }}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-200"
-                    >
-                      Log Out
-                    </button>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
+              </>
             )}
           </div>
 
@@ -123,24 +132,6 @@ const Navbar = () => {
               >
                 Home
               </NavLink>
-              <NavLink
-                to="/events"
-                className="px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-md transition-colors duration-200"
-              >
-                Events
-              </NavLink>
-              <NavLink
-                to="/add-event"
-                className="px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-md transition-colors duration-200"
-              >
-                Add Event
-              </NavLink>
-              <NavLink
-                to="/my-events"
-                className="px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-md transition-colors duration-200"
-              >
-                My Events
-              </NavLink>
 
               {!user ? (
                 <div className="pt-2 border-t border-gray-700">
@@ -158,22 +149,43 @@ const Navbar = () => {
                   </NavLink>
                 </div>
               ) : (
-                <div className="px-3 py-2 pt-4 border-t border-gray-700">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <img
-                      src={"https://i.pravatar.cc/150?img=13"}
-                      alt="Profile"
-                      className="w-8 h-8 rounded-full object-cover border-2 border-gray-600"
-                    />
-                    <span className="text-white">{"User Name"}</span>
+                <>
+                  <div className="px-3 py-2 pt-4 border-t border-gray-700">
+                    <div className="flex items-center space-x-2">
+                      <NavLink to="/events" className={navLinkClass}>
+                        Events
+                      </NavLink>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <NavLink to="/add-event" className={navLinkClass}>
+                        Add Event
+                      </NavLink>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <NavLink to="/my-events" className={navLinkClass}>
+                        My Events
+                      </NavLink>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <img
+                        src={"https://i.pravatar.cc/150?img=13"}
+                        alt="Profile"
+                        className="w-8 h-8 rounded-full object-cover border-2 border-gray-600"
+                      />
+                      <span className="text-white">{"User Name"}</span>
+                    </div>
+                    <button
+                      onClick={() => {
+                        logoutUser();
+                        toast.success("Logged out successfully");
+                        navigate("/");
+                      }}
+                      className="text-red-400 hover:text-red-300 transition-colors duration-200"
+                    >
+                      Logout
+                    </button>
                   </div>
-                  <button
-                    // onClick={handleLogout}
-                    className="text-red-400 hover:text-red-300 transition-colors duration-200"
-                  >
-                    Logout
-                  </button>
-                </div>
+                </>
               )}
             </div>
           </div>

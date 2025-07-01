@@ -20,12 +20,12 @@ const Login = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onSubmit = async (data) => {
-    console.log("data from onSubmit login page", data);
+    // console.log("data from onSubmit login page", data);
     try {
       const { email, password } = data;
 
       const res = await loginUser(email, password);
-      console.log("res from onSubmit login page", res);
+      // console.log("res from onSubmit login page", res);
 
       if (res?.token) {
         localStorage.setItem("user", JSON.stringify(res));
@@ -122,7 +122,7 @@ const Login = () => {
                   </div>
                   {errors.email && (
                     <p className="text-red-400 text-sm font-medium">
-                      {errors.email}
+                      {errors.email?.message || "Email is required"}
                     </p>
                   )}
                 </div>
@@ -166,7 +166,7 @@ const Login = () => {
                   </div>
                   {errors.password && (
                     <p className="text-red-400 text-sm font-medium">
-                      {errors.password}
+                      {errors.password?.message || "Password is required"}
                     </p>
                   )}
                 </div>

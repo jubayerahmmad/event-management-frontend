@@ -31,31 +31,19 @@ const Banner = () => {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           {user ? (
             <>
-              <Link
-                to="/events"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-2xl text-lg font-semibold transition-all duration-200 shadow-xl hover:shadow-2xl transform hover:-translate-y-1"
-              >
+              <Link to="/events" className="btn-primary">
                 Browse Events
               </Link>
-              <Link
-                to="/add-event"
-                className="bg-teal-600 hover:bg-teal-700 text-white px-8 py-3 rounded-2xl text-lg font-semibold transition-all duration-200 shadow-xl hover:shadow-2xl transform hover:-translate-y-1"
-              >
+              <Link to="/add-event" className="btn-secondary">
                 Create Event
               </Link>
             </>
           ) : (
             <>
-              <Link
-                to="/register"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-2xl text-lg font-semibold transition-all duration-200 shadow-xl hover:shadow-2xl transform hover:-translate-y-1"
-              >
+              <Link to="/register" className="btn-primary">
                 Get Started
               </Link>
-              <Link
-                to="/login"
-                className="bg-gray-700 hover:bg-gray-600 text-white border-2 border-gray-600 px-8 py-3 rounded-2xl text-lg font-semibold transition-all duration-200 shadow-xl hover:shadow-2xl transform hover:-translate-y-1"
-              >
+              <Link to="/login" className="btn-secondary">
                 Sign In
               </Link>
             </>

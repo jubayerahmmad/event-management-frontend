@@ -30,13 +30,13 @@ const Register = () => {
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
-    console.log(data);
+    // console.log(data);
     try {
       setIsSubmitting(true);
 
       const { name, email, password, photoURL } = data;
       const res = await createUser(email, password, name, photoURL);
-      console.log("res from onSubmit", res);
+      // console.log("res from onSubmit", res);
 
       if (res?.token) {
         localStorage.setItem("user", JSON.stringify(res));
@@ -138,7 +138,7 @@ const Register = () => {
                   </div>
                   {errors.name && (
                     <p className="text-red-400 text-sm font-medium">
-                      {errors.name}
+                      {errors.name?.message || "Name is required"}
                     </p>
                   )}
                 </div>
@@ -169,7 +169,7 @@ const Register = () => {
                   </div>
                   {errors.email && (
                     <p className="text-red-400 text-sm font-medium">
-                      {errors.email}
+                      {errors.email?.message || "Email is required"}
                     </p>
                   )}
                 </div>
@@ -219,7 +219,7 @@ const Register = () => {
                   </div>
                   {errors.password && (
                     <p className="text-red-400 text-sm font-medium">
-                      {errors.password.message}
+                      {errors.password?.message || "Password is required"}
                     </p>
                   )}
                 </div>
@@ -253,7 +253,7 @@ const Register = () => {
                   </div>
                   {errors.photoURL && (
                     <p className="text-red-400 text-sm font-medium">
-                      {errors.photoURL}
+                      {errors.photoURL?.message || "Photo URL is optional"}
                     </p>
                   )}
                 </div>
