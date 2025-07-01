@@ -1,21 +1,46 @@
 import { useForm } from "react-hook-form";
 import { FileText, Users, Calendar, Clock, MapPin } from "lucide-react";
+import useAxiosInstance from "../../hooks/useAxiosInstance";
 import toast from "react-hot-toast";
 
-const EditEventModal = ({ setShowEditModal }) => {
+const EditEventModal = ({ setShowEditModal, event, refetch }) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      title: event?.title || "",
+      attendeeCount: event?.attendeeCount || 0,
+      organizerName: event?.organizerName || "",
+      date: event?.date || "",
+      time: event?.time || "",
+      location: event?.location || "",
+      description: event?.description || "",
+    },
+  });
+
+  const axiosInstance = useAxiosInstance();
 
   const onSubmit = async (data) => {
-    console.log(data);
-    toast.error("This feature is not available yet! Please try again later.");
+    try {
+      const response = await axiosInstance.patch(
+        `/event/events/${event._id}`,
+        data
+      );
+      console.log("response", response);
+      toast.success("Event updated successfully");
+      refetch();
+    } catch (error) {
+      console.log("error", error);
+      toast.error(error.response?.data?.message || "Something went wrong");
+    } finally {
+      setShowEditModal(false);
+    }
   };
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 w-full overflow-y-auto max-h-[90vh]">
         <div className="bg-gray-800 rounded-lg shadow-md overflow-hidden">
           <div className="bg-gradient-to-r from-blue-600 to-teal-600 px-6 py-8">
             <h1 className="text-3xl font-bold text-white">Edit Event</h1>
@@ -215,11 +240,6 @@ const EditEventModal = ({ setShowEditModal }) => {
               </button>
               <button
                 type="submit"
-                onClick={() =>
-                  toast.error(
-                    "This feature is not available yet! Please try again later."
-                  )
-                }
                 className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Update Event

@@ -13,7 +13,9 @@ const MyEvents = () => {
   const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
   const [eventToDeleteId, setEventToDeleteId] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [updateEventId, setUpdateEventId] = useState(null);
 
+  // get all my events
   const {
     data: myEvents,
     isLoading,
@@ -34,11 +36,25 @@ const MyEvents = () => {
     },
   });
 
+  // get event by id
+  const { data: singleEvent, isLoading: isSingleEventLoading } = useQuery({
+    queryKey: ["event", updateEventId],
+    enabled: !!updateEventId,
+    queryFn: async () => {
+      const { data } = await axiosInstance.get(
+        `/event/events/${updateEventId}`
+      );
+      return data;
+    },
+  });
+
+  // console.log("singleEvent", singleEvent); // it renders 4 times two from this file and two from hook.js(reacts internal)
+
   if (error) {
     toast.error(error.response.data.message || "Something went wrong");
   }
 
-  if (isLoading) {
+  if (isLoading || isSingleEventLoading) {
     return <Loader />;
   }
 
@@ -71,7 +87,7 @@ const MyEvents = () => {
   // handle edit
   const handleUpdate = (eventId) => {
     setShowEditModal(true);
-    console.log(eventId);
+    setUpdateEventId(eventId);
   };
 
   return (
@@ -114,8 +130,9 @@ const MyEvents = () => {
         {/* Edit Modal */}
         {showEditModal && (
           <EditEventModal
-            event={myEvents}
+            event={singleEvent}
             setShowEditModal={setShowEditModal}
+            refetch={refetch}
           />
         )}
 
