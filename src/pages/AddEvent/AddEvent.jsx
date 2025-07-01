@@ -1,55 +1,46 @@
 import { Calendar, MapPin, Clock, Users, FileText } from "lucide-react";
 import { useState } from "react";
-// import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+
+import useAxiosPublic from "../../hooks/useAxiosPublic";
+import toast from "react-hot-toast";
+
 const AddEvent = () => {
-  const [formData, setFormData] = useState({
-    title: "",
-    name: "",
-    date: "",
-    time: "",
-    location: "",
-    description: "",
-    attendeeCount: 0,
-  });
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
-  const [errors, setErrors] = useState({});
+  const axiosPublic = useAxiosPublic();
+
   const [isSubmitting, setIsSubmitting] = useState(false);
-  // const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const onSubmit = async (data) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    data.userEmail = user.email;
+    data.attendeeCount = parseInt(data.attendeeCount);
+
+    try {
+      setIsSubmitting(true);
+      await axiosPublic.post("/event/add-event", data, {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${user.token}`,
+        },
+      });
+
+      toast.success("Event added successfully");
+      reset();
+    } catch (error) {
+      toast.error(error.response.data.message || "Failed to add event");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (
-      !formData.title ||
-      !formData.name ||
-      !formData.date ||
-      !formData.time ||
-      !formData.location ||
-      !formData.description
-    ) {
-      setErrors({
-        title: "Title is required",
-        name: "Name is required",
-        date: "Date is required",
-        time: "Time is required",
-        location: "Location is required",
-        description: "Description is required",
-      });
-      return;
-    }
-    if (formData.attendeeCount < 0) {
-      setErrors({
-        attendeeCount: "Attendee count must be greater than 0",
-      });
-      return;
-    }
-    setIsSubmitting(true);
-    console.log(formData);
-    setIsSubmitting(false);
-  };
   return (
     <div className=" bg-gray-900 py-8">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -61,7 +52,7 @@ const AddEvent = () => {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="p-6 space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-6">
             {/* Event Title */}
             <div>
               <label
@@ -75,22 +66,23 @@ const AddEvent = () => {
                 type="text"
                 id="title"
                 name="title"
-                value={formData.title}
-                onChange={handleChange}
+                {...register("title", { required: true })}
                 className={`w-full px-4 py-2 border rounded-lg text-gray-300 ${
                   errors.title ? "border-red-500" : "border-gray-300"
                 }`}
                 placeholder="Enter event title"
               />
               {errors.title && (
-                <p className="text-red-500 text-sm mt-1">{errors.title}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.title.message}
+                </p>
               )}
             </div>
 
             {/* Name */}
             <div>
               <label
-                htmlFor="name"
+                htmlFor="organizerName"
                 className="block text-sm font-medium text-gray-300 mb-2"
               >
                 <Users className="w-4 h-4 inline mr-1" />
@@ -98,17 +90,18 @@ const AddEvent = () => {
               </label>
               <input
                 type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
+                id="organizerName"
+                name="organizerName"
+                {...register("organizerName", { required: true })}
                 className={`w-full px-4 py-2 border rounded-lg text-gray-300  ${
-                  errors.name ? "border-red-500" : "border-gray-300"
+                  errors.organizerName ? "border-red-500" : "border-gray-300"
                 }`}
                 placeholder="Enter organizer name"
               />
-              {errors.name && (
-                <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+              {errors.organizerName && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.organizerName.message}
+                </p>
               )}
             </div>
 
@@ -126,14 +119,15 @@ const AddEvent = () => {
                   type="date"
                   id="date"
                   name="date"
-                  value={formData.date}
-                  onChange={handleChange}
+                  {...register("date", { required: true })}
                   className={`w-full px-4 py-2 border rounded-lg text-gray-300  ${
                     errors.date ? "border-red-500" : "border-gray-300"
                   }`}
                 />
                 {errors.date && (
-                  <p className="text-red-500 text-sm mt-1">{errors.date}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.date.message}
+                  </p>
                 )}
               </div>
 
@@ -149,14 +143,15 @@ const AddEvent = () => {
                   type="time"
                   id="time"
                   name="time"
-                  value={formData.time}
-                  onChange={handleChange}
+                  {...register("time", { required: true })}
                   className={`w-full px-4 py-2 border rounded-lg text-gray-300  ${
                     errors.time ? "border-red-500" : "border-gray-300"
                   }`}
                 />
                 {errors.time && (
-                  <p className="text-red-500 text-sm mt-1">{errors.time}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.time.message}
+                  </p>
                 )}
               </div>
             </div>
@@ -174,15 +169,16 @@ const AddEvent = () => {
                 type="text"
                 id="location"
                 name="location"
-                value={formData.location}
-                onChange={handleChange}
+                {...register("location", { required: true })}
                 className={`w-full px-4 py-2 border rounded-lg text-gray-300 ${
                   errors.location ? "border-red-500" : "border-gray-300"
                 }`}
                 placeholder="Enter event location"
               />
               {errors.location && (
-                <p className="text-red-500 text-sm mt-1">{errors.location}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.location.message}
+                </p>
               )}
             </div>
 
@@ -197,9 +193,8 @@ const AddEvent = () => {
               <textarea
                 id="description"
                 name="description"
-                value={formData.description}
-                onChange={handleChange}
                 rows={4}
+                {...register("description", { required: true })}
                 className={`w-full px-4 py-2 border rounded-lg text-gray-300  ${
                   errors.description ? "border-red-500" : "border-gray-300"
                 }`}
@@ -207,7 +202,7 @@ const AddEvent = () => {
               />
               {errors.description && (
                 <p className="text-red-500 text-sm mt-1">
-                  {errors.description}
+                  {errors.description.message}
                 </p>
               )}
             </div>
@@ -224,16 +219,15 @@ const AddEvent = () => {
                 type="number"
                 id="attendeeCount"
                 name="attendeeCount"
-                value={formData.attendeeCount}
-                onChange={handleChange}
                 min="0"
+                {...register("attendeeCount", { required: true })}
                 className={`w-full px-4 py-2 border rounded-lg text-gray-300  ${
                   errors.attendeeCount ? "border-red-500" : "border-gray-300"
                 }`}
               />
               {errors.attendeeCount && (
                 <p className="text-red-500 text-sm mt-1">
-                  {errors.attendeeCount}
+                  {errors.attendeeCount.message}
                 </p>
               )}
             </div>

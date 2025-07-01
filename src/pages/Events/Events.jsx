@@ -1,12 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
-import { Calendar, Clock, MapPin, Search, Users } from "lucide-react";
+import { Search } from "lucide-react";
 import Loader from "../../components/Loader";
+import EventCard from "../../components/cards/EventCard";
 
 const Events = () => {
   const axiosPublic = useAxiosPublic();
 
-  const { data: eventData, isLoading } = useQuery({
+  const {
+    data: eventData,
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ["events"],
     queryFn: async () => {
       const { data } = await axiosPublic.get("/event/events");
@@ -18,8 +23,6 @@ const Events = () => {
   if (isLoading) {
     return <Loader />;
   }
-
-  console.log(eventData);
 
   return (
     <div className="min-h-screen py-8">
@@ -48,7 +51,7 @@ const Events = () => {
 
             {/* Date Filter */}
             <div className="lg:w-64">
-              <select className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              <select className="w-full px-4 py-2 bg-gray-800 border border-gray-300 rounded-lg text-gray-300">
                 <option value="all">All Dates</option>
                 <option value="today">Today</option>
                 <option value="currentWeek">Current Week</option>
@@ -63,44 +66,7 @@ const Events = () => {
         {/* Events Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {eventData.map((event) => (
-            <div
-              key={event._id}
-              className="bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden"
-            >
-              <div className="p-6">
-                <h3 className="text-xl font-semibold text-gray-100 mb-2">
-                  {event.title}
-                </h3>
-                <p className="text-sm text-gray-300 mb-3">
-                  By {event.organizerName}
-                </p>
-
-                <div className="space-y-2 mb-4">
-                  <div className="flex items-center text-sm text-gray-300">
-                    <Calendar className="w-4 h-4 mr-2" />
-                    {event.date}
-                  </div>
-                  <div className="flex items-center text-sm text-gray-300">
-                    <Clock className="w-4 h-4 mr-2" />
-                    {event.time}
-                  </div>
-                  <div className="flex items-center text-sm text-gray-300">
-                    <MapPin className="w-4 h-4 mr-2" />
-                    {event.location}
-                  </div>
-                  <div className="flex items-center text-sm text-gray-300">
-                    <Users className="w-4 h-4 mr-2" />
-                    {event.attendeeCount} attendees
-                  </div>
-                </div>
-
-                <p className="text-gray-300 text-sm mb-4 line-clamp-3">
-                  {event.description}
-                </p>
-
-                <button className="btn-primary">Join Event</button>
-              </div>
-            </div>
+            <EventCard key={event._id} event={event} refetch={refetch} />
           ))}
         </div>
       </div>
