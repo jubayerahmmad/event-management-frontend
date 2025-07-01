@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
-import useAxiosPublic from "../hooks/useAxiosPublic";
+import useAxiosInstance from "../hooks/useAxiosInstance";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const axiosPublic = useAxiosPublic();
+  const axiosInstance = useAxiosInstance();
 
   const createUser = async (email, password, name, photoURL) => {
     setLoading(true);
@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
       // save to database
       const userInfo = { email, name, photoURL, password };
 
-      const { data } = await axiosPublic.post("/user/save-user", userInfo);
+      const { data } = await axiosInstance.post("/user/save-user", userInfo);
       console.log("data from createUser", data);
       setUser(data);
       return data;
@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
   const loginUser = async (email, password) => {
     setLoading(true);
     try {
-      const { data } = await axiosPublic.post("/user/login", {
+      const { data } = await axiosInstance.post("/user/login", {
         email,
         password,
       });

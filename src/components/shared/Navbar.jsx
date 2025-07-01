@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { Menu, X, Calendar } from "lucide-react";
+import { Menu, X, Calendar, LogOut } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import toast from "react-hot-toast";
 
@@ -14,8 +14,10 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const navLinkClass = ({ isActive }) =>
-    `px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
-      isActive ? "text-blue-600" : "text-gray-300 hover:text-blue-600"
+    `px-3 py-2 rounded-md text-base font-bold transition-colors duration-200 ${
+      isActive
+        ? "text-blue-400 border-b-2 border-blue-400"
+        : "text-gray-300 hover:text-blue-400 hover:border-b-2 hover:border-blue-400 "
     }`;
 
   return (
@@ -100,8 +102,9 @@ const Navbar = () => {
                           setIsProfileOpen(false);
                           navigate("/");
                         }}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-200"
+                        className=" w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-700 hover:text-white transition-colors duration-200 flex items-center font-bold"
                       >
+                        <LogOut className="w-4 h-4 mr-1" />
                         Log Out
                       </button>
                     </div>
@@ -168,11 +171,15 @@ const Navbar = () => {
                     </div>
                     <div className="flex items-center space-x-2">
                       <img
-                        src={"https://i.pravatar.cc/150?img=13"}
+                        src={
+                          user?.photoURL
+                            ? user.photoURL
+                            : "https://i.pravatar.cc/150?img=13"
+                        }
                         alt="Profile"
                         className="w-8 h-8 rounded-full object-cover border-2 border-gray-600"
                       />
-                      <span className="text-white">{"User Name"}</span>
+                      <span className="text-white">{user?.name}</span>
                     </div>
                     <button
                       onClick={() => {

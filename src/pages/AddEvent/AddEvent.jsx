@@ -2,7 +2,7 @@ import { Calendar, MapPin, Clock, Users, FileText } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-import useAxiosPublic from "../../hooks/useAxiosPublic";
+import useAxiosPublic from "../../hooks/useAxiosInstance";
 import toast from "react-hot-toast";
 
 const AddEvent = () => {

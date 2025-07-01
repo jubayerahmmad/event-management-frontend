@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import useAxiosPublic from "../../hooks/useAxiosPublic";
+import useAxiosInstance from "../../hooks/useAxiosInstance";
 import { Search } from "lucide-react";
 import Loader from "../../components/Loader";
 import EventCard from "../../components/cards/EventCard";
 
 const Events = () => {
-  const axiosPublic = useAxiosPublic();
+  const axiosInstance = useAxiosInstance();
 
   const {
     data: eventData,
@@ -14,7 +14,7 @@ const Events = () => {
   } = useQuery({
     queryKey: ["events"],
     queryFn: async () => {
-      const { data } = await axiosPublic.get("/event/events");
+      const { data } = await axiosInstance.get("/event/events");
 
       return data;
     },
