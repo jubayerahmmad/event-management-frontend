@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import { Calendar, Clock, Edit, MapPin, Trash2, Users } from "lucide-react";
 
-const MyEventsCard = ({ event }) => {
+const MyEventsCard = ({ event, handleDelete, handleUpdate }) => {
   return (
     <div className="bg-gray-800  rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
       <div className="p-6 flex flex-col h-full">
@@ -33,14 +33,14 @@ const MyEventsCard = ({ event }) => {
 
         <div className="flex space-x-2">
           <button
-            // onClick={() => handleEdit(event)}
+            onClick={() => handleUpdate(event._id)}
             className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center"
           >
             <Edit className="w-4 h-4 mr-1" />
             Update
           </button>
           <button
-            // onClick={() => handleDeleteClick(event)}
+            onClick={() => handleDelete(event._id)}
             className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center"
           >
             <Trash2 className="w-4 h-4 mr-1" />

@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
       const userInfo = { email, name, photoURL, password };
 
       const { data } = await axiosInstance.post("/user/save-user", userInfo);
-      console.log("data from createUser", data);
+
       setUser(data);
       return data;
     } catch (error) {
@@ -40,7 +40,6 @@ export const AuthProvider = ({ children }) => {
         email,
         password,
       });
-      console.log("data from loginUser", data);
 
       if (data?.token) {
         localStorage.setItem("user", JSON.stringify(data));

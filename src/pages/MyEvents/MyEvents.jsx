@@ -1,40 +1,78 @@
 import { useQuery } from "@tanstack/react-query";
-
 import Loader from "../../components/Loader";
 import useAxiosInstance from "../../hooks/useAxiosInstance";
-import { format } from "date-fns";
-import { Calendar, Clock, Edit, MapPin, Trash2, Users } from "lucide-react";
 import MyEventsCard from "../../components/cards/MyEventsCard";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import DeleteConfirmationModal from "../../components/modals/DeleteConfirmationModal";
+import EditEventModal from "../../components/modals/EditEventModal";
 
 const MyEvents = () => {
   const axiosInstance = useAxiosInstance();
   const user = JSON.parse(localStorage.getItem("user"));
-  console.log("user from my events", user);
+  const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
+  const [eventToDeleteId, setEventToDeleteId] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   const {
     data: myEvents,
     isLoading,
     error,
+    refetch,
   } = useQuery({
-    queryKey: ["my-events"],
+    queryKey: ["my-events", user?.email],
+    enabled: !!user?.email,
     queryFn: async () => {
-      const { data } = await axiosInstance(`/event/events/${user?.email}`, {
+      const { data } = await axiosInstance(`/event/my-events/${user?.email}`, {
         headers: {
           "Content-Type": "application/json",
           authorization: `Bearer ${user?.token}`,
         },
       });
+
       return data;
     },
   });
 
-  console.log("error from my events", error);
+  if (error) {
+    toast.error(error.response.data.message || "Something went wrong");
+  }
 
   if (isLoading) {
     return <Loader />;
   }
 
-  console.log(myEvents);
+  // handle delete
+  const handleDelete = async (eventId, isDelete) => {
+    setEventToDeleteId(eventId);
+    setShowDeleteConfirmModal(true);
+
+    if (isDelete) {
+      // delete event
+      try {
+        const { data } = await axiosInstance.delete(
+          `/event/events/${eventId}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              authorization: `Bearer ${user?.token}`,
+            },
+          }
+        );
+
+        toast.success(data.message || "Event has been deleted successfully");
+        refetch();
+      } catch (error) {
+        toast.error(error.response.data.message || "Something went wrong");
+      }
+    }
+  };
+
+  // handle edit
+  const handleUpdate = (eventId) => {
+    setShowEditModal(true);
+    console.log(eventId);
+  };
 
   return (
     <div className="min-h-screen bg-gray-900 py-8">
@@ -44,7 +82,7 @@ const MyEvents = () => {
           <p className="text-gray-100">Manage your created events</p>
         </div>
 
-        {myEvents.length === 0 ? (
+        {myEvents?.length === 0 ? (
           <div className="text-center py-12">
             <div className="text-gray-400 text-6xl mb-4">📅</div>
             <h3 className="text-xl font-semibold text-gray-100 mb-2">
@@ -62,49 +100,33 @@ const MyEvents = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {myEvents.map((event) => (
-              <MyEventsCard key={event._id} event={event} />
+            {myEvents?.map((event) => (
+              <MyEventsCard
+                key={event._id}
+                event={event}
+                handleDelete={handleDelete}
+                handleUpdate={handleUpdate}
+              />
             ))}
           </div>
         )}
 
-        {/* Edit Modal
-    {showEditModal && editingEvent && (
-      <EditEventModal
-        event={editingEvent}
-        onUpdate={handleUpdate}
-        onClose={() => {
-          setShowEditModal(false);
-          setEditingEvent(null);
-        }}
-      />
-    )} */}
+        {/* Edit Modal */}
+        {showEditModal && (
+          <EditEventModal
+            event={myEvents}
+            setShowEditModal={setShowEditModal}
+          />
+        )}
 
         {/* Delete Confirmation Modal */}
-        {/* {showDeleteConfirm && eventToDelete && (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Confirm Delete</h3>
-          <p className="text-gray-600 mb-6">
-            Are you sure you want to delete "{eventToDelete.title}"? This action cannot be undone.
-          </p>
-          <div className="flex space-x-4">
-            <button
-              onClick={() => setShowDeleteConfirm(false)}
-              className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded-lg font-medium transition-colors duration-200"
-            >
-              Cancel
-            </button>
-            <button
-              // onClick={handleDeleteConfirm}
-              className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg font-medium transition-colors duration-200"
-            >
-              Delete
-            </button>
-          </div>
-        </div>
-      </div>
-    )} */}
+        {showDeleteConfirmModal && (
+          <DeleteConfirmationModal
+            handleDelete={handleDelete}
+            setShowDeleteConfirmModal={setShowDeleteConfirmModal}
+            eventToDeleteId={eventToDeleteId}
+          />
+        )}
       </div>
     </div>
   );

@@ -1,57 +1,26 @@
-import { Calendar, MapPin, Clock, Users, FileText } from "lucide-react";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
-
-import useAxiosInstance from "../../hooks/useAxiosInstance";
+import { FileText, Users, Calendar, Clock, MapPin } from "lucide-react";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 
-const AddEvent = () => {
+const EditEventModal = ({ setShowEditModal }) => {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm();
 
-  const axiosInstance = useAxiosInstance();
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const navigate = useNavigate();
-
   const onSubmit = async (data) => {
-    const user = JSON.parse(localStorage.getItem("user"));
-
-    data.userEmail = user.email;
-    data.attendeeCount = parseInt(data.attendeeCount);
-
-    try {
-      setIsSubmitting(true);
-      await axiosInstance.post("/event/add-event", data, {
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${user.token}`,
-        },
-      });
-
-      toast.success("Event added successfully");
-      navigate("/my-events");
-      reset();
-    } catch (error) {
-      toast.error(error.response.data.message || "Failed to add event");
-    } finally {
-      setIsSubmitting(false);
-    }
+    console.log(data);
+    toast.error("This feature is not available yet! Please try again later.");
   };
-
   return (
-    <div className=" bg-gray-900 py-8">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="bg-gray-800 rounded-lg shadow-md overflow-hidden">
           <div className="bg-gradient-to-r from-blue-600 to-teal-600 px-6 py-8">
-            <h1 className="text-3xl font-bold text-white">Create New Event</h1>
+            <h1 className="text-3xl font-bold text-white">Edit Event</h1>
             <p className="text-blue-100 mt-2">
-              Fill in the details to create your event
+              Fill in the details to edit your event
             </p>
           </div>
 
@@ -238,11 +207,22 @@ const AddEvent = () => {
             {/* Submit Button */}
             <div className="flex justify-end space-x-4">
               <button
+                type="button"
+                onClick={() => setShowEditModal(false)}
+                className="px-6 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors duration-200"
+              >
+                Cancel
+              </button>
+              <button
                 type="submit"
-                disabled={isSubmitting}
+                onClick={() =>
+                  toast.error(
+                    "This feature is not available yet! Please try again later."
+                  )
+                }
                 className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isSubmitting ? "Creating..." : "Add Event"}
+                Update Event
               </button>
             </div>
           </form>
@@ -252,4 +232,4 @@ const AddEvent = () => {
   );
 };
 
-export default AddEvent;
+export default EditEventModal;

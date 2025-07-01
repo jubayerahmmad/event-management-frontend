@@ -1,5 +1,6 @@
 import { format } from "date-fns";
 import { Calendar, Clock, MapPin, Users } from "lucide-react";
+import toast from "react-hot-toast";
 
 const EventCard = ({ event }) => {
   return (
@@ -32,6 +33,11 @@ const EventCard = ({ event }) => {
         </p>
 
         <button
+          onClick={() =>
+            toast.error(
+              "This feature is not available yet! Please try again later."
+            )
+          }
           className={`px-6 py-2 rounded-xl text-xl font-semibold w-full mt-auto bg-blue-500 hover:bg-blue-600`}
         >
           Join Event
