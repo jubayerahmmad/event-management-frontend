@@ -48,8 +48,6 @@ const MyEvents = () => {
     },
   });
 
-  // console.log("singleEvent", singleEvent); // it renders 4 times two from this file and two from hook.js(reacts internal)
-
   if (error) {
     toast.error(error.response.data.message || "Something went wrong");
   }

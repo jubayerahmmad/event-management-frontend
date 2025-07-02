@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import useAxiosInstance from "../../hooks/useAxiosInstance";
-import { Search } from "lucide-react";
+import { Search, CalendarX } from "lucide-react";
 import Loader from "../../components/Loader";
 import EventCard from "../../components/cards/EventCard";
 import { useState } from "react";
@@ -78,12 +78,37 @@ const Events = () => {
 
         {isLoading ? (
           <Loader />
-        ) : (
+        ) : eventData && eventData.length > 0 ? (
           // Events Grid
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {eventData.map((event) => (
               <EventCard key={event._id} event={event} refetch={refetch} />
             ))}
+          </div>
+        ) : (
+          // No Data Found
+          <div className="text-center py-12">
+            <div className="max-w-md mx-auto">
+              <div className="w-24 h-24 mx-auto mb-4 bg-gray-700 rounded-full flex items-center justify-center">
+                <CalendarX className="w-12 h-12 text-gray-400" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-200 mb-2">
+                No Events Found
+              </h3>
+              <p className="text-gray-400 mb-6">
+                {search
+                  ? `No events found matching "${search}". Try adjusting your search terms.`
+                  : "There are no events available at the moment. Check back later!"}
+              </p>
+              {search && (
+                <button
+                  onClick={() => setSearch("")}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Clear Search
+                </button>
+              )}
+            </div>
           </div>
         )}
       </div>
